@@ -6,6 +6,14 @@ import com.example.ClearingParser.service.ParseLineServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 /*****************************************
  * @author - Md. Rashedul Ghani
  * @email - r23ghani@gmail.com
@@ -24,12 +32,25 @@ public class TestController {
     }
 
     @PostMapping
-    public ResponseEntity<ParsedRecord> createEmployee() {
-        String line = "05004449390051414351000Z  74777155109001000112058100774170419000000003461840000000004400702Pororo Park              Singapore    SG 799900000     1000D8976121 4 0151100";
-//       String line = "0501   A1037    000000                                                        SY477715003034377        0000000000005 5109 0  1U 00                           000000000 C";
-//        String line = "0505665109204559625000000004400702          0101 000000000000N                 P           000000000631680C0676364900000000000000000000N             0000000000000000 CM";
-        ParsedRecord parsedRecord = parseLine.mapLine(line);
-        return ResponseEntity.ok(parsedRecord);
+    public ResponseEntity<List<ParsedRecord>> createEmployee() throws IOException {
+        String filePath = "src/main/resources/ctf/test.txt";
+        List<ParsedRecord> parsedRecords = new ArrayList<>();
+        List<String> lines = readFileWithStreams(filePath);
+        for(String line: lines){
+            ParsedRecord parsedRecord = parseLine.mapLine(line);
+            parsedRecords.add(parsedRecord);
+        }
+        return ResponseEntity.ok(parsedRecords);
+    }
+
+    public List<String> readFileWithStreams(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+
+        try (Stream<String> lines = Files.lines(path)) {
+            return lines
+                    .peek(line -> System.out.println("Read line: " + line))
+                    .toList();
+        }
     }
 
 }

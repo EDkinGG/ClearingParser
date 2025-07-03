@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TCR1AdditionalDataParser  implements TCRParser {
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
+    public ParsedRecord parse(String line) {
         log.debug("Parsing TCR1 Additional Data");
 
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        record.setTransactionCodeQualifier(tq);
-        record.setTcr("1");
+        record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
+        record.setTcr(ParserUtility.extractField(line, 4, 1));
 
         parseTCR1Fields(line, record);
 
@@ -81,5 +81,10 @@ public class TCR1AdditionalDataParser  implements TCRParser {
             log.error("Error parsing TCR1 fields: {}", e.getMessage());
             throw new RuntimeException("Failed to parse TCR1 data", e);
         }
+    }
+
+    @Override
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 }

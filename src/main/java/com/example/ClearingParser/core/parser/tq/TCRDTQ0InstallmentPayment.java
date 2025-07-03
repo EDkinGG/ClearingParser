@@ -16,17 +16,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TCRDTQ0InstallmentPayment implements TQParser {
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
-        log.debug("Parsing TCR7 Chip Card");
+    public ParsedRecord parse(String line) {
+        log.debug("Parsing TCRDTQ0 Installment Payment");
 
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        record.setTransactionCodeQualifier(tq);
-        record.setTcr("7");
-
+        record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
+        record.setTcr(ParserUtility.extractField(line, 4, 1));
         parseTCRDTQ0Fields(line, record);
 
         return record;
+    }
+
+    @Override
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 
     private void parseTCRDTQ0Fields(String line, ParsedRecord record) {
@@ -41,17 +45,25 @@ public class TCRDTQ0InstallmentPayment implements TQParser {
             record.getFields().put("PLAN_OWNER", ParserUtility.extractField(line, 41, 2));
             record.getFields().put("PLAN_REGISTRATION_SYSTEM_ID", ParserUtility.extractField(line, 43, 10));
 
+            //metadata
+            record.getFields().put("PARSER_TYPE", "D");
+            record.getFields().put("TCR_TYPE", "D");
 
-            // Add parser metadata
-            record.getFields().put("PARSER_TYPE", "7");
-            record.getFields().put("TCR_TYPE", "7");
-
-            log.debug("Successfully parsed TCR7 with {} fields", record.getFields().size());
+            log.debug("Successfully parsed TCRD TQ0 with {} fields", record.getFields().size());
 
         } catch (Exception e) {
-            log.error("Error parsing TCR7 fields: {}", e.getMessage());
-            throw new RuntimeException("Failed to parse TCR7 data", e);
+            log.error("Error parsing TCRD TQ0 fields: {}", e.getMessage());
+            throw new RuntimeException("Failed to parse TCRD TQ0 data", e);
         }
     }
 
+    @Override
+    public String getSupportedTQType() {
+        return "";
+    }
+
+    @Override
+    public boolean canHandleTQ(String tq) {
+        return false;
+    }
 }

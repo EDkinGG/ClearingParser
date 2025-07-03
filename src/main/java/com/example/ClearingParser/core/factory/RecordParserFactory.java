@@ -2,6 +2,8 @@ package com.example.ClearingParser.core.factory;
 
 import com.example.ClearingParser.common.exception.UnsupportedParseException;
 import com.example.ClearingParser.core.parser.tc.TC05Parser;
+import com.example.ClearingParser.core.parser.tc.TC90Parser;
+import com.example.ClearingParser.core.parser.tc.TC91Parser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -29,16 +31,20 @@ public class RecordParserFactory {
         transactionParsersMap.put("35", new TC05Parser()); // Dispute financial reversals
         transactionParsersMap.put("36", new TC05Parser());
         transactionParsersMap.put("37", new TC05Parser());
+        transactionParsersMap.put("90", new TC90Parser()); // File Header Records
+        transactionParsersMap.put("91", new TC91Parser()); // Batch Trailer
+        transactionParsersMap.put("92", new TC91Parser()); // File Trailer
+
     }
 
-    public static RecordParser getParser(String tc, String tcr, String tq) {
-        log.debug("Selecting parser for TC={}, TCR={}, TQ={}", tc, tcr, tq);
+    public static RecordParser getParser(String tc) {
+        log.debug("Selecting parser for TC={}", tc);
 
         // Get the transaction parser which will handle TCR routing internally
         TransactionParser transactionParser = transactionParsersMap.get(tc);
         if (transactionParser == null) {
-            log.debug("Parser not available for TC = {}, TCR = {}, TQ = {}", tc, tcr, tq);
-            throw new UnsupportedParseException("Parser not available for TC = {}, TCR = {}, TQ = {}", tc, tcr, tq);
+            log.debug("Parser not available for TC = {}", tc);
+            throw new UnsupportedParseException("Parser not available for TC = {}", tc);
         }
         log.debug("Using transaction parser: {} for TC{}", transactionParser.getClass().getSimpleName(), tc);
         return transactionParser;

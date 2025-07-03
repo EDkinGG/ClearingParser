@@ -17,8 +17,6 @@ public class ParseLineServiceImpl implements ParseLineService {
     @Override
     public ParsedRecord mapLine(String line) {
         String tc = line.substring(0,2);
-        String tq = line.substring(2,3);
-        String tcr = line.substring(3,4);
-        return RecordParserFactory.getParser(tc, tcr, tq).parse(line, tcr, tq);
+        return RecordParserFactory.getParser(tc).parse(line);
     }
 }

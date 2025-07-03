@@ -1,8 +1,12 @@
 package com.example.ClearingParser.core.parser.tcr.tc05;
 
 
+import com.example.ClearingParser.common.util.ParserUtility;
 import com.example.ClearingParser.core.factory.TCRParser;
+import com.example.ClearingParser.core.factory.TQParser;
 import com.example.ClearingParser.core.model.dto.ParsedRecord;
+import com.example.ClearingParser.core.parser.tq.TCRDTQ0InstallmentPayment;
+import com.example.ClearingParser.core.parser.tq.TCRDTQ2OriginalCreditAdditionalData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -17,47 +21,39 @@ import java.util.Map;
 
 @Slf4j
 public class TCRDInstallmentParser  implements TCRParser {
-    // TC05 family manages its own TCR parsers
-    private final Map<String, TCRParser> tcrParsersMap = new HashMap<>();
 
-    public TC05Parser() {
-        initializeTCRParsers();
+    private final Map<String, TQParser> tqParsersMap = new HashMap<>();
+
+    public TCRDInstallmentParser() {
+        initializeTQParsers();
     }
 
-    private void initializeTCRParsers() {
-        tcrParsersMap.put("0", new TCR0DraftDataParser());
-        tcrParsersMap.put("1", new TCR1AdditionalDataParser());
-        tcrParsersMap.put("2", new TCR2NationalSettlementParser());
-        tcrParsersMap.put("4", new TCR4SupplementalDataParser());
-        tcrParsersMap.put("5", new TCR5PaymentServiceParser());
-        tcrParsersMap.put("6", new TCR6LimitedUseParser());
-        tcrParsersMap.put("7", new TCR7ChipCardParser());
-        tcrParsersMap.put("D", new TCRDInstallmentParser());
+    private void initializeTQParsers() {
+        tqParsersMap.put("0", new TCRDTQ0InstallmentPayment());
+        tqParsersMap.put("2", new TCRDTQ2OriginalCreditAdditionalData());
 
-        log.debug("TC05Parser initialized with {} TCR parsers", tcrParsersMap.size());
+        log.debug("TCRDParser initialized with {} TQ parsers", tqParsersMap.size());
     }
 
     //Parser Selection
     @Override
-    public ParsedRecord parse(String line, String tcr, String tq) {
-        log.debug("TC05Parser parsing line with TCR={}, TQ={}", tcr, tq);
+    public ParsedRecord parse(String line) {
+        String tcr = ParserUtility.extractField(line, 3, 1);
+        String tq = ParserUtility.extractField(line, 3, 1);
+        log.debug("TC05Parser parsing line with TCR={} and TQ={}", tcr, tq);
 
-        // Try TCR-specific parser first
-        TCRParser tcrParser = tcrParsersMap.get(tcr);
-        if (tcrParser != null) {
-            log.debug("Using TCR{} specific parser: {}", tcr, tcrParser.getClass().getSimpleName());
-            return tcrParser.parseTCR(line, tcr, tq);
+        TQParser tqParser = tqParsersMap.get(tq);
+        if (tqParser != null) {
+            log.debug("Using TCR{} specific parser: {}", tcr, tqParser.getClass().getSimpleName());
+            return tqParser.parse(line);
         }
-
-        // Fallback to generic TC05 parsing
         log.debug("No specific TCR{} parser found, using generic TC05 parsing", tcr);
-        //return parseGeneric(line, tcr, tq);
         return null;
     }
 
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
-        return null;
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 
     @Override

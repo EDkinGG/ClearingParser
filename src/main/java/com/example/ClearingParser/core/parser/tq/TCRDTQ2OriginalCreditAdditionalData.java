@@ -15,17 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TCRDTQ2OriginalCreditAdditionalData implements TQParser {
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
-        log.debug("Parsing TCR7 Chip Card");
-
+    public ParsedRecord parse(String line) {
+        log.debug("Parsing TCRDTQ2 Original Credit Additional Data");
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        record.setTransactionCodeQualifier(tq);
-        record.setTcr("7");
-
+        record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
+        record.setTcr(ParserUtility.extractField(line, 4, 1));
         parseTCRDTQ0Fields(line, record);
-
         return record;
+    }
+
+    @Override
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 
     private void parseTCRDTQ0Fields(String line, ParsedRecord record) {
@@ -34,14 +36,24 @@ public class TCRDTQ2OriginalCreditAdditionalData implements TQParser {
             record.getFields().put("RECIPIENT_NAME", ParserUtility.extractField(line, 7, 30).trim());
 
             // Add parser metadata
-            record.getFields().put("PARSER_TYPE", "7");
-            record.getFields().put("TCR_TYPE", "7");
+            record.getFields().put("PARSER_TYPE", "D");
+            record.getFields().put("TCR_TYPE", "D");
 
-            log.debug("Successfully parsed TCR7 with {} fields", record.getFields().size());
+            log.debug("Successfully parsed TCRD TQ2 with {} fields", record.getFields().size());
 
         } catch (Exception e) {
             log.error("Error parsing TCR7 fields: {}", e.getMessage());
-            throw new RuntimeException("Failed to parse TCR7 data", e);
+            throw new RuntimeException("Failed to parse TCRD TQ2 data", e);
         }
+    }
+
+    @Override
+    public String getSupportedTQType() {
+        return "";
+    }
+
+    @Override
+    public boolean canHandleTQ(String tq) {
+        return false;
     }
 }

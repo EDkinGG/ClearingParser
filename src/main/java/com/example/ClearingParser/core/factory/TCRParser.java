@@ -10,8 +10,7 @@ import com.example.ClearingParser.core.model.dto.ParsedRecord;
  ************************************************
  */
 
-public interface TCRParser {
-    ParsedRecord parseTCR(String line, String tcr, String tq);
+public interface TCRParser extends RecordParser {
     boolean canHandleTCR(String tcr);
     String getSupportedTCRType();
 }

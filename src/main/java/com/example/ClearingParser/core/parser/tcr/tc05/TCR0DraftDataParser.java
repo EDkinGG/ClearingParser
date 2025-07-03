@@ -18,18 +18,22 @@ import lombok.extern.slf4j.Slf4j;
 public class TCR0DraftDataParser implements TCRParser {
 
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
+    public ParsedRecord parse(String line) {
         log.debug("Parsing TCR0 Draft Data");
 
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        record.setTransactionCodeQualifier(tq);
-        record.setTcr("0");
+        record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
+        record.setTcr(ParserUtility.extractField(line, 4, 1));
 
-        // Parse all TCR0 fields according to BASE II specification
         parseTCR0Fields(line, record);
 
         return record;
+    }
+
+    @Override
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 
     @Override
@@ -44,7 +48,6 @@ public class TCR0DraftDataParser implements TCRParser {
 
     private void parseTCR0Fields(String line, ParsedRecord record) {
         try {
-            // Core transaction data
             record.getFields().put("ACCOUNT_NUMBER", ParserUtility.extractField(line, 5, 16));
             record.getFields().put("ACCOUNT_NUMBER_EXTENSION", ParserUtility.extractField(line, 21, 3));
             record.getFields().put("FLOOR_LIMIT_INDICATOR", ParserUtility.extractField(line, 24, 1));
@@ -53,13 +56,11 @@ public class TCR0DraftDataParser implements TCRParser {
             record.getFields().put("ACQUIRER_BUSINESS_ID", ParserUtility.extractField(line, 50, 8));
             record.getFields().put("PURCHASE_DATE", ParserUtility.extractField(line, 58, 4));
 
-            // Amount fields
             record.getFields().put("DESTINATION_AMOUNT", ParserUtility.parseAmount(line, 62, 12));
             record.getFields().put("DESTINATION_CURRENCY_CODE", ParserUtility.extractField(line, 74, 3));
             record.getFields().put("SOURCE_AMOUNT", ParserUtility.parseAmount(line, 77, 12));
             record.getFields().put("SOURCE_CURRENCY_CODE", ParserUtility.extractField(line, 89, 3));
 
-            // Merchant data
             record.getFields().put("MERCHANT_NAME", ParserUtility.extractField(line, 92, 25).trim());
             record.getFields().put("MERCHANT_CITY", ParserUtility.extractField(line, 117, 13).trim());
             record.getFields().put("MERCHANT_COUNTRY_CODE", ParserUtility.extractField(line, 130, 3));
@@ -67,7 +68,6 @@ public class TCR0DraftDataParser implements TCRParser {
             record.getFields().put("MERCHANT_ZIP_CODE", ParserUtility.extractField(line, 137, 5));
             record.getFields().put("MERCHANT_STATE_PROVINCE_CODE", ParserUtility.extractField(line, 142, 3));
 
-            // Transaction processing data
             record.getFields().put("REQUESTED_PAYMENT_SERVICE", ParserUtility.extractField(line, 145, 1));
             record.getFields().put("NUMBER_OF_PAYMENT_FORMS", ParserUtility.extractField(line, 146, 1));
             record.getFields().put("USAGE_CODE", ParserUtility.extractField(line, 147, 1));
@@ -82,7 +82,6 @@ public class TCR0DraftDataParser implements TCRParser {
             record.getFields().put("CENTRAL_PROCESSING_DATE", ParserUtility.extractField(line, 164, 4));
             record.getFields().put("REIMBURSEMENT_ATTRIBUTE", ParserUtility.extractField(line, 168, 1));
 
-            // Add parser metadata
             record.getFields().put("PARSER_TYPE", "TCR0_SPECIFIC");
             record.getFields().put("TCR_TYPE", "0");
 

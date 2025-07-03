@@ -15,17 +15,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TCR5PaymentServiceParser  implements TCRParser {
     @Override
-    public ParsedRecord parseTCR(String line, String tcr, String tq) {
+    public ParsedRecord parse(String line) {
         log.debug("Parsing TCR5 Payment Service Data");
 
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        record.setTransactionCodeQualifier(tq);
-        record.setTcr("5");
+        record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
+        record.setTcr(ParserUtility.extractField(line, 4, 1));
 
         parseTCR5Fields(line, record);
 
         return record;
+    }
+
+    @Override
+    public boolean canHandle(String tc, String tcr, String tq) {
+        return false;
     }
 
     @Override
