@@ -1,6 +1,9 @@
 package com.example.ClearingParser.core.factory;
 
 import com.example.ClearingParser.common.exception.UnsupportedParseException;
+import com.example.ClearingParser.common.util.ParserUtility;
+import com.example.ClearingParser.core.model.dto.ParsedRecord;
+import com.example.ClearingParser.core.parser.tc.GenericTCParser;
 import com.example.ClearingParser.core.parser.tc.TC05Parser;
 import com.example.ClearingParser.core.parser.tc.TC90Parser;
 import com.example.ClearingParser.core.parser.tc.TC91Parser;
@@ -40,18 +43,18 @@ public class RecordParserFactory {
     public static RecordParser getParser(String tc) {
         log.debug("Selecting parser for TC={}", tc);
 
-        // Get the transaction parser which will handle TCR routing internally
         TransactionParser transactionParser = transactionParsersMap.get(tc);
         if (transactionParser == null) {
             log.debug("Parser not available for TC = {}", tc);
-            throw new UnsupportedParseException("Parser not available for TC = {}", tc);
+            transactionParser = new GenericTCParser();
+            //throw new UnsupportedParseException("Parser not available for TC = {}", tc);
         }
         log.debug("Using transaction parser: {} for TC{}", transactionParser.getClass().getSimpleName(), tc);
         return transactionParser;
     }
 
-    public static boolean isSupported(String tc, String tcr, String tq) {
+    public static boolean isSupported(String tc, String tcr) {
         TransactionParser parser = transactionParsersMap.get(tc);
-        return parser != null && parser.canHandle(tc, tcr, tq);
+        return parser != null && parser.supportsTCR(tcr);
     }
 }

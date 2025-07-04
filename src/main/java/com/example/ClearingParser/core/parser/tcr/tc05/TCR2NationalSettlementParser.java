@@ -12,23 +12,19 @@ import com.example.ClearingParser.core.model.dto.ParsedRecord;
  */
 
 public class TCR2NationalSettlementParser  implements TCRParser {
-    @Override
-    public ParsedRecord parse(String line) {
-        return null;
-    }
-
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
-
-    @Override
-    public boolean canHandleTCR(String tcr) {
-        return false;
-    }
 
     @Override
     public String getSupportedTCRType() {
         return "";
+    }
+
+    @Override
+    public boolean canHandleTQ(String tq) {
+        return false;
+    }
+
+    @Override
+    public ParsedRecord parse(String line) {
+        return null;
     }
 }

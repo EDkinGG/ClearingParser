@@ -29,13 +29,9 @@ public class TCR6LimitedUseParser  implements TCRParser {
     }
 
     @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
-
-    @Override
-    public boolean canHandleTCR(String tcr) {
-        return "6".equals(tcr);
+    public boolean canHandleTQ(String tq) {
+        boolean tcSupported = tq.matches("^([012])$");
+        return tcSupported;
     }
 
     @Override

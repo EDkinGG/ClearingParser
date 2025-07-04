@@ -16,18 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 public class TCRDTQ2OriginalCreditAdditionalData implements TQParser {
     @Override
     public ParsedRecord parse(String line) {
-        log.debug("Parsing TCRDTQ2 Original Credit Additional Data");
+        log.debug("Parsing TCRD TQ2 Original Credit Additional Data");
         ParsedRecord record = new ParsedRecord();
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
         record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
         record.setTcr(ParserUtility.extractField(line, 4, 1));
         parseTCRDTQ0Fields(line, record);
         return record;
-    }
-
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
     }
 
     private void parseTCRDTQ0Fields(String line, ParsedRecord record) {
@@ -48,12 +43,7 @@ public class TCRDTQ2OriginalCreditAdditionalData implements TQParser {
     }
 
     @Override
-    public String getSupportedTQType() {
-        return "";
-    }
-
-    @Override
-    public boolean canHandleTQ(String tq) {
-        return false;
+    public String getSupportedTQ() {
+        return "TQ2";
     }
 }

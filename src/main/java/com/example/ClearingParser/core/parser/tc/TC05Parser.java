@@ -24,6 +24,7 @@ public class TC05Parser implements TransactionParser {
         tcrParsersMap.put("0", new TCR0DraftDataParser());
         tcrParsersMap.put("1", new TCR1AdditionalDataParser());
         tcrParsersMap.put("2", new TCR2NationalSettlementParser());
+        tcrParsersMap.put("3", new TCR3IndustrySpecificParser());
         tcrParsersMap.put("4", new TCR4SupplementalDataParser());
         tcrParsersMap.put("5", new TCR5PaymentServiceParser());
         tcrParsersMap.put("6", new TCR6LimitedUseParser());
@@ -49,16 +50,6 @@ public class TC05Parser implements TransactionParser {
         return parseGeneric(line);
     }
 
-    //Others
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        boolean tcSupported = tc.matches("^(05|06|07|15|16|17|25|26|27|35|36|37)$");
-        if (!tcSupported) {
-            return false;
-        }
-        return tcrParsersMap.containsKey(tcr) || canHandleGeneric(tcr);
-    }
-
     @Override
     public boolean supportsTCR(String tcr) {
         return tcrParsersMap.containsKey(tcr) || canHandleGeneric(tcr);
@@ -80,8 +71,8 @@ public class TC05Parser implements TransactionParser {
         record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
         record.setTransactionCodeQualifier(ParserUtility.extractField(line, 3, 1));
         record.setTcr(ParserUtility.extractField(line, 4, 1));
-
-        if (line.length() != 168) {
+        log.info("Line length={}", line.length());
+        if (line.length() > 168) {
             throw new IllegalArgumentException("Invalid line length: " + line.length() + ", expected 168");
         }
 

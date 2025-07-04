@@ -30,8 +30,9 @@ public class TCR1AdditionalDataParser  implements TCRParser {
     }
 
     @Override
-    public boolean canHandleTCR(String tcr) {
-        return "1".equals(tcr);
+    public boolean canHandleTQ(String tq) {
+        boolean tcSupported = tq.matches("^([012])$");
+        return tcSupported;
     }
 
     @Override
@@ -81,10 +82,5 @@ public class TCR1AdditionalDataParser  implements TCRParser {
             log.error("Error parsing TCR1 fields: {}", e.getMessage());
             throw new RuntimeException("Failed to parse TCR1 data", e);
         }
-    }
-
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
     }
 }

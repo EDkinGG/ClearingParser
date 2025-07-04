@@ -38,7 +38,7 @@ public class TCRDInstallmentParser  implements TCRParser {
     //Parser Selection
     @Override
     public ParsedRecord parse(String line) {
-        String tcr = ParserUtility.extractField(line, 3, 1);
+        String tcr = ParserUtility.extractField(line, 4, 1);
         String tq = ParserUtility.extractField(line, 3, 1);
         log.debug("TC05Parser parsing line with TCR={} and TQ={}", tcr, tq);
 
@@ -52,17 +52,13 @@ public class TCRDInstallmentParser  implements TCRParser {
     }
 
     @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
-
-    @Override
-    public boolean canHandleTCR(String tcr) {
-        return false;
+    public boolean canHandleTQ(String tq) {
+        boolean tcSupported = tq.matches("^([02])$");
+        return tcSupported;
     }
 
     @Override
     public String getSupportedTCRType() {
-        return "";
+        return "D";
     }
 }

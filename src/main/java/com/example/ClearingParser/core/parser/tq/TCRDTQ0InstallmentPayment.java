@@ -28,10 +28,6 @@ public class TCRDTQ0InstallmentPayment implements TQParser {
         return record;
     }
 
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
 
     private void parseTCRDTQ0Fields(String line, ParsedRecord record) {
         try {
@@ -58,12 +54,7 @@ public class TCRDTQ0InstallmentPayment implements TQParser {
     }
 
     @Override
-    public String getSupportedTQType() {
-        return "";
-    }
-
-    @Override
-    public boolean canHandleTQ(String tq) {
-        return false;
+    public String getSupportedTQ() {
+        return "TQ0";
     }
 }

@@ -31,22 +31,17 @@ public class TC90Parser implements TransactionParser {
 
     @Override
     public String getSupportedTransactionCode() {
-        return "";
+        return "TC90";
     }
 
     @Override
     public boolean supportsTCR(String tcr) {
-        return false;
+        return tcr.equals("0");
     }
 
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
 
     private void parseTC90Fields(String line, ParsedRecord record) {
         try {
-            record.getFields().put("TRANSACTION_CODE", ParserUtility.extractField(line, 1, 2));
             record.getFields().put("PROCESSING_BIN", ParserUtility.extractField(line, 3, 6));
             record.getFields().put("PROCESSING_DATE", ParserUtility.extractField(line, 9, 5));
             record.getFields().put("SETTLEMENT_DATE", ParserUtility.extractField(line, 20, 5));

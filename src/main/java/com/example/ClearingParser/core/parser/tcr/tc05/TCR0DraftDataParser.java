@@ -31,19 +31,16 @@ public class TCR0DraftDataParser implements TCRParser {
         return record;
     }
 
-    @Override
-    public boolean canHandle(String tc, String tcr, String tq) {
-        return false;
-    }
-
-    @Override
-    public boolean canHandleTCR(String tcr) {
-        return "0".equals(tcr);
-    }
 
     @Override
     public String getSupportedTCRType() {
         return "0";
+    }
+
+    @Override
+    public boolean canHandleTQ(String tq) {
+        boolean tcSupported = tq.matches("^([012])$");
+        return tcSupported;
     }
 
     private void parseTCR0Fields(String line, ParsedRecord record) {
