@@ -6,8 +6,6 @@ import com.example.ClearingParser.core.factory.BusinessSpecificParser;
 import com.example.ClearingParser.core.model.dto.ParsedRecord;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
-
 /*****************************************
  * @author - Md. Rashedul Ghani
  * @email - r23ghani@gmail.com

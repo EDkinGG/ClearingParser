@@ -1,8 +1,5 @@
 package com.example.ClearingParser.core.factory;
 
-import com.example.ClearingParser.common.exception.UnsupportedParseException;
-import com.example.ClearingParser.common.util.ParserUtility;
-import com.example.ClearingParser.core.model.dto.ParsedRecord;
 import com.example.ClearingParser.core.parser.tc.GenericTCParser;
 import com.example.ClearingParser.core.parser.tc.TC05Parser;
 import com.example.ClearingParser.core.parser.tc.TC90Parser;
