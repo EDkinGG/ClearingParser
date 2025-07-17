@@ -33,7 +33,7 @@ public class TestController {
 
     @PostMapping
     public ResponseEntity<List<ParsedRecord>> createEmployee() throws IOException {
-        String filePath = "src/main/resources/ctf/ctf1.txt";
+        String filePath = "src/main/resources/ctf/test.txt";
         List<ParsedRecord> parsedRecords = new ArrayList<>();
         List<String> lines = readFileWithStreams(filePath);
         for(String line: lines){
