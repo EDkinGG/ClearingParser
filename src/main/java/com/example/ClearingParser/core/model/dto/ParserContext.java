@@ -16,9 +16,6 @@ import lombok.Data;
 @Builder
 public class ParserContext {
     private String tc;
-    private String tcr;
-    private String tq;
-    private String businessFormatCode;
     private String line;
     private int lineLength;
 
@@ -31,9 +28,6 @@ public class ParserContext {
                 .line(line)
                 .lineLength(line.length())
                 .tc(ParserUtility.extractField(line, 1, 2))
-                .tcr(line.length() > 3 ? ParserUtility.extractField(line, 4, 1) : "")
-                .tq(line.length() > 2 ? ParserUtility.extractField(line, 3, 1) : "")
-                .businessFormatCode("") // Will be set conditionally
                 .build();
     }
 }

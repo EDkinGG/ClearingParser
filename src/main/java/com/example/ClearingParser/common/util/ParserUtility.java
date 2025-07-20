@@ -1,6 +1,9 @@
 package com.example.ClearingParser.common.util;
 
 
+import com.example.ClearingParser.enumeration.BusinessFormatCode;
+import com.example.ClearingParser.enumeration.TransactionCodeQualifier;
+import com.example.ClearingParser.enumeration.TransactionComponentRecord;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -15,6 +18,18 @@ import java.math.RoundingMode;
 
 @Slf4j
 public class ParserUtility {
+
+    public static TransactionComponentRecord getTCR(String data){
+        return TransactionComponentRecord.getEnumFromValue(extractField(data, 4, 1));
+    }
+
+    public static TransactionCodeQualifier getTCQ(String data){
+        return TransactionCodeQualifier.getEnumFromValue(extractField(data, 3, 1));
+    }
+
+    public static BusinessFormatCode getBusinessFormatCode(String data){
+        return BusinessFormatCode.getEnumFromValue(extractField(data, 17, 2));
+    }
 
     public static String extractField(String data, int startPos, int length) {
         if (data.length() >= startPos + length - 1) {
