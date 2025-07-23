@@ -2,6 +2,7 @@ package com.example.ClearingParser.core.model.dto;
 
 
 import com.example.ClearingParser.common.util.ParserUtility;
+import com.example.ClearingParser.enumeration.TransactionCode;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ import lombok.Data;
 public class ParserContext {
     private String tc;
     private String line;
+    private String tcParser;
     private int lineLength;
 
     public static ParserContext fromLine(String line) {
@@ -27,7 +29,8 @@ public class ParserContext {
         return ParserContext.builder()
                 .line(line)
                 .lineLength(line.length())
-                .tc(ParserUtility.extractField(line, 1, 2))
+                .tc(ParserUtility.getTC(line).getVal())
+                .tcParser("TC"+ParserUtility.getTC(line).getVal())
                 .build();
     }
 }

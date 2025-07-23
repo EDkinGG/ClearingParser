@@ -1,6 +1,8 @@
 package com.example.ClearingParser.core.factory;
 
 
+import com.example.ClearingParser.core.model.dto.ParsedRecord;
+
 /***********************************************
  * @author - Md. Rashedul Ghani
  * @email - rashed.ghani@konasl.com
@@ -8,7 +10,7 @@ package com.example.ClearingParser.core.factory;
  ************************************************
  */
 
-public interface TransactionParser extends RecordParser{
+public interface TransactionParser{
+    ParsedRecord parse(String line);
     String getSupportedTransactionCode();
-    boolean supportsTCR(String tcr);
 }

@@ -4,9 +4,7 @@ package com.example.ClearingParser.core.model.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*****************************************
  * @author - Md. Rashedul Ghani
@@ -18,12 +16,12 @@ import java.util.Map;
 @Data
 @Builder
 public class ParserConfig {
-    private String parserType;
+    private String parserName;
     private List<FieldDefinition> fields;
 
-    public static ParserConfig create( String parserType, List<FieldDefinition> fields) {
+    public static ParserConfig create( String parserName, List<FieldDefinition> fields) {
         return ParserConfig.builder()
-                .parserType(parserType)
+                .parserName(parserName)
                 .fields(fields)
                 .build();
     }

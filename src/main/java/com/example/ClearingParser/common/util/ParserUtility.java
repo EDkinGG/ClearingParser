@@ -1,7 +1,10 @@
 package com.example.ClearingParser.common.util;
 
 
+import com.example.ClearingParser.core.model.dto.ParsedRecord;
+import com.example.ClearingParser.core.model.dto.ParserContext;
 import com.example.ClearingParser.enumeration.BusinessFormatCode;
+import com.example.ClearingParser.enumeration.TransactionCode;
 import com.example.ClearingParser.enumeration.TransactionCodeQualifier;
 import com.example.ClearingParser.enumeration.TransactionComponentRecord;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,10 @@ import java.math.RoundingMode;
 @Slf4j
 public class ParserUtility {
 
+    public static TransactionCode getTC(String data){
+        return TransactionCode.getEnumFromValue(extractField(data, 1, 2));
+    }
+
     public static TransactionComponentRecord getTCR(String data){
         return TransactionComponentRecord.getEnumFromValue(extractField(data, 4, 1));
     }
@@ -29,6 +36,28 @@ public class ParserUtility {
 
     public static BusinessFormatCode getBusinessFormatCode(String data){
         return BusinessFormatCode.getEnumFromValue(extractField(data, 17, 2));
+    }
+
+    public static ParsedRecord createBaseRecord(ParserContext context){
+        ParsedRecord record = new ParsedRecord();
+
+        record.setTransactionCode(context.getTc());
+        record.setTcr(ParserUtility.getTCR(context.getLine()).getVal());
+        record.setTransactionCodeQualifier(ParserUtility.getTCQ(context.getLine()).getVal());
+
+        record.getFields().put("RAW_LINE", context.getLine());
+        record.getFields().put("LINE_LENGTH", String.valueOf(context.getLineLength()));
+        record.getFields().put("TC_PARSER", context.getTcParser());
+        return record;
+    }
+
+    public static void genericFieldParse( ParsedRecord record, ParserContext context) {
+        log.info("Line length={}", context.getLineLength());
+        if (context.getLineLength() > 168) {
+            throw new IllegalArgumentException("Invalid line length: " + context.getLineLength() + ", expected 168");
+        }
+        record.getFields().put("PARSER_NAME", "GENERIC");
+        log.debug("Generic TC05 parsing completed for TCR{}", record.getTcr());
     }
 
     public static String extractField(String data, int startPos, int length) {

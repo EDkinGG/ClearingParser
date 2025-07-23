@@ -1,10 +1,9 @@
 package com.example.ClearingParser.core.parser.tc;
 
 
-import com.example.ClearingParser.common.util.ParserUtility;
-import com.example.ClearingParser.core.factory.RecordParser;
 import com.example.ClearingParser.core.factory.TransactionParser;
 import com.example.ClearingParser.core.model.dto.ParsedRecord;
+import com.example.ClearingParser.core.model.dto.ParserContext;
 import lombok.extern.slf4j.Slf4j;
 
 /*****************************************
@@ -20,16 +19,17 @@ public class GenericTCParser implements TransactionParser {
     @Override
     public ParsedRecord parse(String line) {
         ParsedRecord record = new ParsedRecord();
-        record.setTransactionCode(ParserUtility.extractField(line, 1, 2));
-        log.info("Line length={}", line.length());
+        ParserContext context = ParserContext.fromLine(line);
+        record.setTransactionCode(context.getTc());
+        log.info("Line length={}", context.getLineLength());
         if (line.length() > 168) {
-            throw new IllegalArgumentException("Invalid line length: " + line.length() + ", expected 168");
+            throw new IllegalArgumentException("Invalid line length: " + context.getLineLength() + ", expected 168");
         }
 
         record.getFields().put("RAW_LINE", line);
         record.getFields().put("LINE_LENGTH", String.valueOf(line.length()));
-        record.getFields().put("PARSER_TYPE", "GENERIC");
-        record.getFields().put("TCR_TYPE", "GENERIC");
+        record.getFields().put("TC_PARSER", "GENERIC");
+        record.getFields().put("PARSER_NAME", "GENERIC");
 
         log.info("Generic TC parsing completed for TC{}", record.getTransactionCode());
         return record;
@@ -40,8 +40,4 @@ public class GenericTCParser implements TransactionParser {
         return "ALL";
     }
 
-    @Override
-    public boolean supportsTCR(String tcr) {
-        return true;
-    }
 }

@@ -7,26 +7,31 @@ import com.example.ClearingParser.core.factory.TransactionParser;
 import com.example.ClearingParser.core.model.dto.ParsedRecord;
 import com.example.ClearingParser.core.model.dto.ParserConfig;
 import com.example.ClearingParser.core.model.dto.ParserContext;
-import com.example.ClearingParser.core.parser.config.builder.TC05ConfigBuilder;
-import com.example.ClearingParser.enumeration.BusinessFormatCode;
+import com.example.ClearingParser.core.parser.config.builder.TC10ConfigBuilder;
 import com.example.ClearingParser.enumeration.TransactionCodeQualifier;
 import com.example.ClearingParser.enumeration.TransactionComponentRecord;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class TC05Parser implements TransactionParser {
+/*****************************************
+ * @author - Md. Rashedul Ghani
+ * @email - r23ghani@gmail.com
+ * @date - 7/22/2025 at 12:35 PM
+ ******************************************
+ */
 
-    private final TC05ConfigBuilder configBuilder;
+@Slf4j
+public class TC10Parser implements TransactionParser {
+    private final TC10ConfigBuilder configBuilder;
     private final FieldParser fieldParser;
 
-    public TC05Parser() {
-        this.configBuilder = new TC05ConfigBuilder();
+    public TC10Parser() {
+        this.configBuilder = new TC10ConfigBuilder();
         this.fieldParser = new FieldParser();
     }
 
     @Override
     public ParsedRecord parse(String line) {
-        log.debug("TC05 Parser parsing line");
+        log.debug("TC10/20 Parser parsing line");
 
         ParserContext context = ParserContext.fromLine(line);
         ParserConfig config = getConfiguration(context);
@@ -44,8 +49,9 @@ public class TC05Parser implements TransactionParser {
 
     @Override
     public String getSupportedTransactionCode() {
-        return "TC05, TC06, TC07, TC15, TC16, TC17, TC25, TC26, TC27, TC35, TC36, TC37";
+        return "TC10, TC20";
     }
+
 
     // ==================== COMPLEX TCR CONFIGURATION GETTERS ====================
 
@@ -54,55 +60,30 @@ public class TC05Parser implements TransactionParser {
 
         switch (tcr) {
             case TCR_0:
-                return configBuilder.getTcr0Config();
+                return getTCR0Configuration(context);
             case TCR_1:
                 return configBuilder.getTcr1Config();
-            case TCR_2:
-                return configBuilder.getTcr2Config();
-            case TCR_3:
-                return getTCR3Configuration(context);
             case TCR_4:
                 return configBuilder.getTcr4Config();
-            case TCR_5:
-                return configBuilder.getTcr5Config();
-            case TCR_6:
-                return configBuilder.getTcr6Config();
-            case TCR_7:
-                return configBuilder.getTcr7Config();
-            case TCR_D:
-                return getTCRDConfiguration(context);
             default:
                 log.debug("No specific configuration found for TCR: {}, using generic", tcr);
                 return null;
         }
     }
 
-    private ParserConfig getTCR3Configuration(ParserContext context) {
-        BusinessFormatCode businessCode = ParserUtility.getBusinessFormatCode(context.getLine());
-
-        switch (businessCode) {
-            case CR:
-                log.debug("Found TCR3 configuration for BusinessCode: CR");
-                return configBuilder.createTcr3BusinessCrConfig();
-            default:
-                log.debug("Using generic TCR3 configuration for BusinessCode: {}", businessCode.getVal());
-                return null;
-        }
-    }
-
-    private ParserConfig getTCRDConfiguration(ParserContext context) {
+    private ParserConfig getTCR0Configuration(ParserContext context) {
         TransactionCodeQualifier tcq = ParserUtility.getTCQ(context.getLine());
 
         switch (tcq) {
             case TCQ_0:
-                log.debug("Found TCRD configuration for TCQ: 0");
-                return configBuilder.getTcrDTcq0Config();
-            case TCQ_2:
-                log.debug("Found TCRD configuration for TCQ: 2");
-                return configBuilder.getTcrDTcq2Config();
+                return configBuilder.getTcr0Tcq0Config();
+            case TCQ_1:
+                return configBuilder.getTcr0Tcq1Config();
             default:
-                log.debug("Using generic TCRD configuration for TCQ: {}", tcq.getVal());
+                log.debug("No specific configuration found for TCQ: {}, using generic", tcq.getVal());
                 return null;
         }
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.example.ClearingParser.common.util;
 
 import com.example.ClearingParser.core.model.dto.FieldDefinition;
 import com.example.ClearingParser.core.model.dto.ParsedRecord;
+import com.example.ClearingParser.core.model.dto.ParserConfig;
 import com.example.ClearingParser.core.model.dto.ParserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,9 @@ import java.util.List;
 @Slf4j
 public class FieldParser {
 
-    public void parseFields(ParserContext context, ParsedRecord record, List<FieldDefinition> fields) {
-        for (FieldDefinition field : fields) {
+    public void parseFields(ParserContext context, ParsedRecord record, ParserConfig config) {
+        record.getFields().put("PARSER_NAME", config.getParserName());
+        for (FieldDefinition field : config.getFields()) {
             try {
                 String value = extractFieldValue(context.getLine(), field);
                 record.getFields().put(field.getName(), value);
