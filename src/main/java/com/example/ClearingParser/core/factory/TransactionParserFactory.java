@@ -45,6 +45,8 @@ public class TransactionParserFactory {
         transactionParsersMap.put("90", new TC90Parser()); // File Header Records
         transactionParsersMap.put("91", new TC91Parser()); // Batch Trailer
         transactionParsersMap.put("92", new TC91Parser()); // File Trailer
+
+        transactionParsersMap.put("46", new TC46Parser()); // Member Settlement data
     }
 
     public static TransactionParser getParser(String tc) {

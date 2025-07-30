@@ -7,6 +7,7 @@ import com.example.ClearingParser.enumeration.BusinessFormatCode;
 import com.example.ClearingParser.enumeration.TransactionCode;
 import com.example.ClearingParser.enumeration.TransactionCodeQualifier;
 import com.example.ClearingParser.enumeration.TransactionComponentRecord;
+import com.example.ClearingParser.enumeration.SubReportGroup;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -36,6 +37,10 @@ public class ParserUtility {
 
     public static BusinessFormatCode getBusinessFormatCode(String data){
         return BusinessFormatCode.getEnumFromValue(extractField(data, 17, 2));
+    }
+
+    public static SubReportGroup getSubReportGroup(String data){
+        return SubReportGroup.getEnumFromValue(extractField(data, 60, 1));
     }
 
     public static ParsedRecord createBaseRecord(ParserContext context){
